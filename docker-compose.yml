@@ -4,6 +4,9 @@ services:
   vote:
     build: ./vote
     command: python app.py
+    environment:
+      REDIS_HOST: "redis"
+      REDIS_PORT: 6379
     volumes:
      - ./vote:/app
     ports:
@@ -15,6 +18,9 @@ services:
   result:
     build: ./result
     command: nodemon server.js
+    environment:
+      POSTGRES_HOST: "db"
+      POSTGRES_PORT: 5432
     volumes:
       - ./result:/app
     ports:
@@ -27,6 +33,11 @@ services:
   worker:
     build:
       context: ./worker
+    environment:
+      REDIS_HOST: "redis"
+      REDIS_PORT: 6379
+      POSTGRES_HOST: "db"
+      POSTGRES_PORT: 5432
     depends_on:
       - "redis"
       - "db"
