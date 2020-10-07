@@ -3,6 +3,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Text.RegularExpressions;
 using System.Threading;
 using Newtonsoft.Json;
 using Npgsql;
@@ -109,8 +110,8 @@ namespace Worker
 
         private static ConnectionMultiplexer OpenRedisConnection(string hostname, string port)
         {
-            // Use IP address to workaround https://github.com/StackExchange/StackExchange.Redis/issues/410
-            var ipAddress = GetIp(hostname);
+            Match match = Regex.Match(hostname, @"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}");
+            var ipAddress = match.Success ? hostname : GetIp(hostname);
             Console.WriteLine($"Found redis at {ipAddress}");
 
             while (true)
